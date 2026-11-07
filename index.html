@@ -1,337 +1,322 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2113.65">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Times; color: #40a33f; -webkit-text-stroke: #40a33f}
-    span.s1 {font: 12.0px Helvetica; color: #000000; -webkit-text-stroke: 0px #000000}
-    span.s2 {font-kerning: none; background-color: #191919}
-    span.s3 {font: 14.0px Times; font-kerning: none; color: #40a33f; background-color: #191919; -webkit-text-stroke: 0px #40a33f}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les SDF de Gembloux</title>
+    <style>
+        :root {
+            --primary-orange: #E67E22;
+            --dark-orange: #D35400;
+            --black: #1A1A1A;
+            --white: #FFFFFF;
+            --gray-bg: #F5F5F5;
+            --gray-border: #E0E0E0;
+            --gray-text: #888888;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--gray-bg); color: var(--black); line-height: 1.6; }
+        header { background-color: var(--black); color: var(--primary-orange); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header h1 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .btn { background-color: var(--primary-orange); color: var(--white); border: none; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px; font-weight: bold; transition: background 0.3s; }
+        .btn:hover { background-color: var(--dark-orange); }
+        .btn-small { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
+        .btn-danger { background-color: #c0392b; }
+
+        .container { max-width: 800px; margin: 2rem auto; background: var(--white); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-orange); padding-bottom: 0.5rem; }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid var(--gray-border); border-radius: 4px; font-size: 1rem; }
+
+        /* --- CALENDRIER --- */
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-header h3 { font-size: 1.2rem; text-transform: capitalize; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 1rem; }
+        .calendar-day-name { text-align: center; font-weight: bold; color: var(--gray-text); padding: 0.5rem 0; font-size: 0.9rem; }
+        
+        .calendar-day { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--gray-border); border-radius: 4px; cursor: pointer; transition: all 0.2s; background-color: var(--white); }
+        .calendar-day:hover:not(.disabled):not(.full) { border-color: var(--primary-orange); background-color: #fcf3ea; }
+        .calendar-day.selected { background-color: var(--primary-orange); color: var(--white); border-color: var(--primary-orange); }
+        .calendar-day.disabled { background-color: var(--gray-bg); color: #ccc; cursor: not-allowed; }
+        .calendar-day.full { background-color: #ffeaea; color: #cc0000; text-decoration: line-through; cursor: not-allowed; }
+        
+        .day-number { font-size: 1.2rem; font-weight: bold; }
+        .day-spots { font-size: 0.75rem; margin-top: 2px; }
+
+        #bookingZone { margin-top: 2rem; padding: 1.5rem; background-color: var(--gray-bg); border-radius: 8px; display: none; border-left: 4px solid var(--primary-orange); }
+        #selectedDateDisplay { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }
+
+        #adminSection { display: none; }
+        .admin-list { list-style: none; }
+        .admin-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid var(--gray-border); }
+        .admin-date-group { margin-bottom: 1.5rem; }
+        .admin-date-title { background: var(--gray-bg); padding: 0.5rem; font-weight: bold; }
+
+        #loadingMsg { text-align: center; font-weight: bold; color: var(--primary-orange); margin-bottom: 1rem; }
+
+        /* OPTIMISATION SMARTPHONE */
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .container { margin: 1rem; padding: 1rem; }
+            .calendar-grid { gap: 2px; }
+            .day-number { font-size: 1rem; }
+            .day-spots { font-size: 0.65rem; }
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="fr"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Les SDF de Gembloux&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--primary-orange: #E67E22;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--dark-orange: #D35400;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--black: #1A1A1A;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--white: #FFFFFF;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--gray-bg: #F5F5F5;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--gray-border: #E0E0E0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>--gray-text: #888888;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { background-color: var(--gray-bg); color: var(--black); line-height: 1.6; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>header { background-color: var(--black); color: var(--primary-orange); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>header h1 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn { background-color: var(--primary-orange); color: var(--white); border: none; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px; font-weight: bold; transition: background 0.3s; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn:hover { background-color: var(--dark-orange); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-small { padding: 0.3rem 0.6rem; font-size: 0.9rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-danger { background-color: #c0392b; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container { max-width: 800px; margin: 2rem auto; background: var(--white); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>h2 { margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-orange); padding-bottom: 0.5rem; }</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.form-group { margin-bottom: 1rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.form-group input { width: 100%; padding: 0.8rem; border: 1px solid var(--gray-border); border-radius: 4px; font-size: 1rem; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* --- CALENDRIER --- */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-header h3 { font-size: 1.2rem; text-transform: capitalize; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 1rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-day-name { text-align: center; font-weight: bold; color: var(--gray-text); padding: 0.5rem 0; font-size: 0.9rem; }</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-day { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--gray-border); border-radius: 4px; cursor: pointer; transition: all 0.2s; background-color: var(--white); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-day:hover:not(.disabled):not(.full) { border-color: var(--primary-orange); background-color: #fcf3ea; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-day.selected { background-color: var(--primary-orange); color: var(--white); border-color: var(--primary-orange); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-day.disabled { background-color: var(--gray-bg); color: #ccc; cursor: not-allowed; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calendar-day.full { background-color: #ffeaea; color: #cc0000; text-decoration: line-through; cursor: not-allowed; }</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.day-number { font-size: 1.2rem; font-weight: bold; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.day-spots { font-size: 0.75rem; margin-top: 2px; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>#bookingZone { margin-top: 2rem; padding: 1.5rem; background-color: var(--gray-bg); border-radius: 8px; display: none; border-left: 4px solid var(--primary-orange); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>#selectedDateDisplay { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>#adminSection { display: none; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.admin-list { list-style: none; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.admin-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid var(--gray-border); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.admin-date-group { margin-bottom: 1.5rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.admin-date-title { background: var(--gray-bg); padding: 0.5rem; font-weight: bold; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>#loadingMsg { text-align: center; font-weight: bold; color: var(--primary-orange); margin-bottom: 1rem; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* OPTIMISATION SMARTPHONE */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 600px) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>header { flex-direction: column; gap: 15px; text-align: center; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.container { margin: 1rem; padding: 1rem; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.calendar-grid { gap: 2px; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.day-number { font-size: 1rem; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.day-spots { font-size: 0.65rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;header&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;Les SDF de Gembloux&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-small" onclick="window.toggleAdmin()"&gt;Espace Admin&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;main class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="loadingMsg"&gt;Connexion à la base de données...&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- SECTION UTILISATEUR --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="clientSection" style="display:none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2&gt;Sélectionnez une date&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="calendar-header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn btn-small" onclick="window.changeMonth(-1)"&gt;&amp;#8592; Précédent&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3 id="currentMonthDisplay"&gt;&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn btn-small" onclick="window.changeMonth(1)"&gt;Suivant &amp;#8594;&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="calendar-grid"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="calendar-day-name"&gt;Lun&lt;/div&gt;&lt;div class="calendar-day-name"&gt;Mar&lt;/div&gt;&lt;div class="calendar-day-name"&gt;Mer&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="calendar-day-name"&gt;Jeu&lt;/div&gt;&lt;div class="calendar-day-name"&gt;Ven&lt;/div&gt;&lt;div class="calendar-day-name"&gt;Sam&lt;/div&gt;&lt;div class="calendar-day-name"&gt;Dim&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="calendarDays" class="calendar-grid"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="bookingZone"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="selectedDateDisplay"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="form-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label for="nameInput"&gt;Nom pour la réservation :&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="text" id="nameInput" placeholder="Ex: Jean Dupont"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn" style="width: 100%;" onclick="window.bookBed()"&gt;Confirmer la réservation&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- SECTION ADMIN --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;section id="adminSection"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2&gt;Administration&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="form-group" style="background: var(--gray-bg); padding: 1rem; border-radius: 4px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="maxBedsInput"&gt;Nombre total de lits disponibles (par jour) :&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="display: flex; gap: 10px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="number" id="maxBedsInput" min="1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="btn" onclick="window.updateSettings()"&gt;Enregistrer&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3&gt;Toutes les réservations&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="adminReservationsList"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/main&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- INTEGRATION DE LA BASE DE DONNEES FIREBASE --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script type="module"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* =======================================================================</p>
-<p class="p1"><span class="Apple-converted-space">           </span>ÉTAPE CRUCIALE : REMPLACEZ CE BLOC PAR VOS PROPRES CLÉS FIREBASE</p>
-<p class="p1"><span class="Apple-converted-space">           </span>======================================================================= */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const firebaseConfig = {</p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span>apiKey: "</span><span class="s2">AIzaSyCb1eyEGfXn2FyVHgXgYfrKzmQpeqkvuq8</span><span class="s1">",</span></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span>authDomain: "</span><span class="s2">sdf-gembloux.firebaseapp.com</span><span class="s1">",</span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>projectId: "<span class="s3">sdf-gembloux</span>",</p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span>storageBucket: "</span><span class="s2">sdf-gembloux.firebasestorage.app</span><span class="s1">",</span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>messagingSenderId: "<span class="s3">201060005920</span>",</p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span>appId: "</span><span class="s2">1:201060005920:web:1664913457482abbba2445</span><span class="s1">"</span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* ======================================================================= */</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Initialisation de Firebase</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const app = initializeApp(firebaseConfig);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const dbFirestore = getFirestore(app);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const docRef = doc(dbFirestore, "sdf_database", "main_data");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Base de données par défaut (si Firebase est vide)</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let db = { settings: { maxBeds: 5 }, reservations: {} };</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>let currentDate = new Date();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let selectedDateStr = null;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const todayStr = new Date().toISOString().split('T')[0];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// ÉCOUTEUR EN TEMPS RÉEL (Met à jour le site dès qu'il y a un changement dans la base)</p>
-<p class="p1"><span class="Apple-converted-space">        </span>onSnapshot(docRef, (docSnap) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (docSnap.exists()) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>db = docSnap.data();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>setDoc(docRef, db); // Crée le fichier de base si c'est la 1ère fois</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('loadingMsg').style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if(document.getElementById('adminSection').style.display !== 'block') {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById('clientSection').style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('maxBedsInput').value = db.settings.maxBeds;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>renderCalendar();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>renderAdminList();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>async function saveDB() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>await setDoc(docRef, db);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// --- FONCTIONS DU CALENDRIER (Attachées à "window" pour être utilisables dans le HTML) ---</p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.changeMonth = function(step) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>currentDate.setMonth(currentDate.getMonth() + step);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>renderCalendar();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.selectDate = function(dateStr) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>selectedDateStr = dateStr;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>renderCalendar();<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const dateObj = new Date(dateStr);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const dateFR = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('selectedDateDisplay').innerHTML = `Réservation pour le &lt;strong&gt;${dateFR}&lt;/strong&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('bookingZone').style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('nameInput').focus();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.bookBed = async function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const name = document.getElementById('nameInput').value.trim();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (!selectedDateStr) return alert("Veuillez choisir une date.");</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (!name) return alert("Veuillez entrer un nom.");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (!db.reservations[selectedDateStr]) db.reservations[selectedDateStr] = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (db.reservations[selectedDateStr].length &gt;= db.settings.maxBeds) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>alert("Désolé, quelqu'un vient juste de réserver la dernière place !");</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>db.reservations[selectedDateStr].push(name);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>await saveDB(); // Sauvegarde sur internet</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('nameInput').value = '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('bookingZone').style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>selectedDateStr = null;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>alert("Réservation confirmée pour " + name + " !");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function renderCalendar() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const year = currentDate.getFullYear();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const month = currentDate.getMonth();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('currentMonthDisplay').innerText = `${monthNames[month]} ${year}`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const calendarDays = document.getElementById('calendarDays');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>calendarDays.innerHTML = '';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>let firstDay = new Date(year, month, 1).getDay() - 1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (firstDay === -1) firstDay = 6;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const daysInMonth = new Date(year, month + 1, 0).getDate();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; firstDay; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const emptyDiv = document.createElement('div');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>emptyDiv.style.visibility = 'hidden';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>calendarDays.appendChild(emptyDiv);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 1; i &lt;= daysInMonth; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const dayDiv = document.createElement('div');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>dayDiv.className = 'calendar-day';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const bookedCount = db.reservations[dStr] ? db.reservations[dStr].length : 0;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const remaining = db.settings.maxBeds - bookedCount;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>dayDiv.innerHTML = `&lt;span class="day-number"&gt;${i}&lt;/span&gt;&lt;span class="day-spots"&gt;${remaining} dispo&lt;/span&gt;`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (dStr &lt; todayStr) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>dayDiv.classList.add('disabled');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>dayDiv.querySelector('.day-spots').innerText = "Passé";</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else if (remaining &lt;= 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>dayDiv.classList.add('full');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>dayDiv.querySelector('.day-spots').innerText = "Complet";</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (dStr === selectedDateStr) dayDiv.classList.add('selected');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>dayDiv.onclick = () =&gt; window.selectDate(dStr);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>calendarDays.appendChild(dayDiv);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// --- FONCTIONS ADMIN ---</p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.toggleAdmin = function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const clientSec = document.getElementById('clientSection');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const adminSec = document.getElementById('adminSection');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (adminSec.style.display === 'none' || adminSec.style.display === '') {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const pwd = prompt("Mot de passe Admin ? (Tapez 'admin')");</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (pwd === 'admin') {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>clientSec.style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>adminSec.style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else { alert("Mot de passe incorrect."); }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>clientSec.style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>adminSec.style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>selectedDateStr = null;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById('bookingZone').style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.updateSettings = async function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const newMax = parseInt(document.getElementById('maxBedsInput').value);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (newMax &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>db.settings.maxBeds = newMax;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>await saveDB();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>alert("Nombre de lits mis à jour pour tout le monde !");</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function renderAdminList() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const container = document.getElementById('adminReservationsList');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>container.innerHTML = '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const dates = Object.keys(db.reservations).sort();</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if(dates.length === 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>container.innerHTML = '&lt;p&gt;Aucune réservation pour le moment.&lt;/p&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>dates.forEach(date =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (db.reservations[date].length &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const group = document.createElement('div');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>group.className = 'admin-date-group';</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const dateObj = new Date(date);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const dateFR = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>let html = `&lt;div class="admin-date-title"&gt;${dateFR} (${db.reservations[date].length}/${db.settings.maxBeds} lits)&lt;/div&gt;&lt;ul class="admin-list"&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>db.reservations[date].forEach((name, index) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>html += `&lt;li&gt;&lt;span&gt;${name}&lt;/span&gt; &lt;button class="btn btn-small btn-danger" onclick="window.deleteBooking('${date}', ${index})"&gt;Supprimer&lt;/button&gt;&lt;/li&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>html += `&lt;/ul&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>group.innerHTML = html;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>container.appendChild(group);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.deleteBooking = async function(date, index) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if(confirm("Annuler cette réservation ?")) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>db.reservations[date].splice(index, 1);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if(db.reservations[date].length === 0) delete db.reservations[date];</p>
-<p class="p1"><span class="Apple-converted-space">                </span>await saveDB();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+    <header>
+        <h1>Les SDF de Gembloux</h1>
+        <button class="btn btn-small" onclick="window.toggleAdmin()">Espace Admin</button>
+    </header>
+
+    <main class="container">
+        <div id="loadingMsg">Connexion à la base de données...</div>
+
+        <!-- SECTION UTILISATEUR -->
+        <section id="clientSection" style="display:none;">
+            <h2>Sélectionnez une date</h2>
+            <div class="calendar-header">
+                <button class="btn btn-small" onclick="window.changeMonth(-1)">&#8592; Précédent</button>
+                <h3 id="currentMonthDisplay"></h3>
+                <button class="btn btn-small" onclick="window.changeMonth(1)">Suivant &#8594;</button>
+            </div>
+            <div class="calendar-grid">
+                <div class="calendar-day-name">Lun</div><div class="calendar-day-name">Mar</div><div class="calendar-day-name">Mer</div>
+                <div class="calendar-day-name">Jeu</div><div class="calendar-day-name">Ven</div><div class="calendar-day-name">Sam</div><div class="calendar-day-name">Dim</div>
+            </div>
+            <div id="calendarDays" class="calendar-grid"></div>
+
+            <div id="bookingZone">
+                <div id="selectedDateDisplay"></div>
+                <div class="form-group">
+                    <label for="nameInput">Nom pour la réservation :</label>
+                    <input type="text" id="nameInput" placeholder="Ex: Jean Dupont">
+                </div>
+                <button class="btn" style="width: 100%;" onclick="window.bookBed()">Confirmer la réservation</button>
+            </div>
+        </section>
+
+        <!-- SECTION ADMIN -->
+        <section id="adminSection">
+            <h2>Administration</h2>
+            <div class="form-group" style="background: var(--gray-bg); padding: 1rem; border-radius: 4px;">
+                <label for="maxBedsInput">Nombre total de lits disponibles (par jour) :</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="maxBedsInput" min="1">
+                    <button class="btn" onclick="window.updateSettings()">Enregistrer</button>
+                </div>
+            </div>
+            <h3>Toutes les réservations</h3>
+            <div id="adminReservationsList"></div>
+        </section>
+    </main>
+
+    <!-- INTEGRATION DE LA BASE DE DONNEES FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+        /* =======================================================================
+           ÉTAPE CRUCIALE : REMPLACEZ CE BLOC PAR VOS PROPRES CLÉS FIREBASE
+           ======================================================================= */
+        const firebaseConfig = {
+            apiKey: "AIzaSyCb1eyEGfXn2FyVHgXgYfrKzmQpeqkvuq8",
+
+            authDomain: "sdf-gembloux.firebaseapp.com",
+
+            projectId: "sdf-gembloux",
+
+            storageBucket: "sdf-gembloux.firebasestorage.app",
+
+            messagingSenderId: "201060005920",
+
+            appId: "1:201060005920:web:1664913457482abbba2445"
+        };
+        /* ======================================================================= */
+
+        // Initialisation de Firebase
+        const app = initializeApp(firebaseConfig);
+        const dbFirestore = getFirestore(app);
+        const docRef = doc(dbFirestore, "sdf_database", "main_data");
+
+        // Base de données par défaut (si Firebase est vide)
+        let db = { settings: { maxBeds: 5 }, reservations: {} };
+        
+        let currentDate = new Date();
+        let selectedDateStr = null;
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        // ÉCOUTEUR EN TEMPS RÉEL (Met à jour le site dès qu'il y a un changement dans la base)
+        onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                db = docSnap.data();
+            } else {
+                setDoc(docRef, db); // Crée le fichier de base si c'est la 1ère fois
+            }
+            
+            document.getElementById('loadingMsg').style.display = 'none';
+            if(document.getElementById('adminSection').style.display !== 'block') {
+                document.getElementById('clientSection').style.display = 'block';
+            }
+            
+            document.getElementById('maxBedsInput').value = db.settings.maxBeds;
+            renderCalendar();
+            renderAdminList();
+        });
+
+        async function saveDB() {
+            await setDoc(docRef, db);
+        }
+
+        // --- FONCTIONS DU CALENDRIER (Attachées à "window" pour être utilisables dans le HTML) ---
+        window.changeMonth = function(step) {
+            currentDate.setMonth(currentDate.getMonth() + step);
+            renderCalendar();
+        };
+
+        window.selectDate = function(dateStr) {
+            selectedDateStr = dateStr;
+            renderCalendar(); 
+            const dateObj = new Date(dateStr);
+            const dateFR = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('selectedDateDisplay').innerHTML = `Réservation pour le <strong>${dateFR}</strong>`;
+            document.getElementById('bookingZone').style.display = 'block';
+            document.getElementById('nameInput').focus();
+        };
+
+        window.bookBed = async function() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (!selectedDateStr) return alert("Veuillez choisir une date.");
+            if (!name) return alert("Veuillez entrer un nom.");
+
+            if (!db.reservations[selectedDateStr]) db.reservations[selectedDateStr] = [];
+
+            if (db.reservations[selectedDateStr].length >= db.settings.maxBeds) {
+                alert("Désolé, quelqu'un vient juste de réserver la dernière place !");
+                return;
+            }
+
+            db.reservations[selectedDateStr].push(name);
+            await saveDB(); // Sauvegarde sur internet
+            
+            document.getElementById('nameInput').value = '';
+            document.getElementById('bookingZone').style.display = 'none';
+            selectedDateStr = null;
+            alert("Réservation confirmée pour " + name + " !");
+        };
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById('currentMonthDisplay').innerText = `${monthNames[month]} ${year}`;
+
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+
+            let firstDay = new Date(year, month, 1).getDay() - 1;
+            if (firstDay === -1) firstDay = 6; 
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.style.visibility = 'hidden';
+                calendarDays.appendChild(emptyDiv);
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                
+                const bookedCount = db.reservations[dStr] ? db.reservations[dStr].length : 0;
+                const remaining = db.settings.maxBeds - bookedCount;
+
+                dayDiv.innerHTML = `<span class="day-number">${i}</span><span class="day-spots">${remaining} dispo</span>`;
+
+                if (dStr < todayStr) {
+                    dayDiv.classList.add('disabled');
+                    dayDiv.querySelector('.day-spots').innerText = "Passé";
+                } else if (remaining <= 0) {
+                    dayDiv.classList.add('full');
+                    dayDiv.querySelector('.day-spots').innerText = "Complet";
+                } else {
+                    if (dStr === selectedDateStr) dayDiv.classList.add('selected');
+                    dayDiv.onclick = () => window.selectDate(dStr);
+                }
+                calendarDays.appendChild(dayDiv);
+            }
+        }
+
+        // --- FONCTIONS ADMIN ---
+        window.toggleAdmin = function() {
+            const clientSec = document.getElementById('clientSection');
+            const adminSec = document.getElementById('adminSection');
+
+            if (adminSec.style.display === 'none' || adminSec.style.display === '') {
+                const pwd = prompt("Mot de passe Admin ? (Tapez 'admin')");
+                if (pwd === 'admin') {
+                    clientSec.style.display = 'none';
+                    adminSec.style.display = 'block';
+                } else { alert("Mot de passe incorrect."); }
+            } else {
+                clientSec.style.display = 'block';
+                adminSec.style.display = 'none';
+                selectedDateStr = null;
+                document.getElementById('bookingZone').style.display = 'none';
+            }
+        };
+
+        window.updateSettings = async function() {
+            const newMax = parseInt(document.getElementById('maxBedsInput').value);
+            if (newMax > 0) {
+                db.settings.maxBeds = newMax;
+                await saveDB();
+                alert("Nombre de lits mis à jour pour tout le monde !");
+            }
+        };
+
+        function renderAdminList() {
+            const container = document.getElementById('adminReservationsList');
+            container.innerHTML = '';
+            const dates = Object.keys(db.reservations).sort();
+            
+            if(dates.length === 0) {
+                container.innerHTML = '<p>Aucune réservation pour le moment.</p>';
+                return;
+            }
+
+            dates.forEach(date => {
+                if (db.reservations[date].length > 0) {
+                    const group = document.createElement('div');
+                    group.className = 'admin-date-group';
+                    const dateObj = new Date(date);
+                    const dateFR = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+                    let html = `<div class="admin-date-title">${dateFR} (${db.reservations[date].length}/${db.settings.maxBeds} lits)</div><ul class="admin-list">`;
+                    db.reservations[date].forEach((name, index) => {
+                        html += `<li><span>${name}</span> <button class="btn btn-small btn-danger" onclick="window.deleteBooking('${date}', ${index})">Supprimer</button></li>`;
+                    });
+                    html += `</ul>`;
+                    group.innerHTML = html;
+                    container.appendChild(group);
+                }
+            });
+        }
+
+        window.deleteBooking = async function(date, index) {
+            if(confirm("Annuler cette réservation ?")) {
+                db.reservations[date].splice(index, 1);
+                if(db.reservations[date].length === 0) delete db.reservations[date];
+                await saveDB();
+            }
+        };
+    </script>
 </body>
 </html>
